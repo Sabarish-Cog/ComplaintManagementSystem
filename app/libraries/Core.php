@@ -1,0 +1,48 @@
+<?php
+
+class Core
+{
+    protected $currentController = "Pages";
+    protected $currentMethod = "index";
+    protected $params = [];
+    public function __construct() {
+        $url = $this->getUrl();
+        
+        if (file_exists("../app/controllers/" . $url[0] . ".php")) {
+            $this->currentController = ucwords($url[0]);
+            unset($url[0]);
+        }
+        
+        // Include Controller file
+        require_once "../app/controllers/" . $this->currentController . ".php";
+        // Initialise Controller
+        $this->currentController = new $this->currentController;
+
+        if (isset($url[1]) && method_exists($this->currentController, $url[1])) {
+            $this->currentMethod = $url[1];
+            unset($url[1]);
+        }
+        // print_r($this->currentController);
+        // print_r($url);
+        // echo $this->currentMethod;
+        
+        $this->params = $url ? array_values($url) : [];
+
+        call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+
+    }
+
+    public function getUrl() {
+        $request_uri = $_SERVER['REQUEST_URI'];
+
+        // Use parse_url to get only the path part, without the query string
+        // QS like: $_GET['url'];
+        $path = parse_url($request_uri, PHP_URL_PATH);
+
+        // Remove the leading slash
+        $url = ltrim($path, '/');
+        $url = filter_var($url, FILTER_SANITIZE_URL);
+        $url = explode("/", $url);
+        return $url;
+    }
+}
