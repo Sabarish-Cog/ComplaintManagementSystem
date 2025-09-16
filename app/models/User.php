@@ -30,14 +30,14 @@ class User {
         return false;
     }
 
-    public function checkPassword($email, $password) {
+    public function login($email, $password) {
         $this->db->query("SELECT * FROM users WHERE email = :email");
         $this->db->bind(':email', $email);
         
-        $row = (array) $this->db->single();
+        $row = $this->db->single();
         
-        if (isset($row['password']) && password_verify($password, $row['password'])) {
-            return true;
+        if (isset($row->password) && password_verify($password, $row->password)) {
+            return $row;
         }
         return false;
     }

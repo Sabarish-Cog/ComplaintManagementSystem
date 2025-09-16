@@ -67,6 +67,7 @@ class Users extends Controller
                 }
                 // unset($data["password"]);
                 // $this->view("users/login");
+                flash("register_success", "Successfully Registered! \n Proceed to Login!!");
                 redirect("users/login");
             } else {
                 $this->view("users/register", $data);
@@ -110,12 +111,18 @@ class Users extends Controller
             
             if (empty($data['password'])) {
                 $data['err_password'] = "Please Enter Your Password";
-            } elseif (!$this->userModel->checkPassword($data['email'], $data['password'], PASSWORD_DEFAULT)) {
-                $data['err_password'] = "Password is incorrect!";
             }
-
+            
             if (empty($data['err_email']) && empty($data['err_password'])) {
-                $this->view("pages/contact");
+                $user = $this->userModel->login($data['email'], $data['password']);
+                if (!$user) {
+                    $data['err_password'] = "Password is incorrect!";
+                    $this->view("users/login", $data);
+                }
+                flash("login_success", "You are Successfully Logged In!");
+                $this->createUserSession($user);
+                
+                // $this->view("pages/contact");
             } else {
                 $this->view("users/login", $data);
             }
@@ -129,5 +136,22 @@ class Users extends Controller
 
             $this->view('users/login', $data);
         }
+    }
+    function createUserSession($user) {
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['user_name'] = $user->name;
+        $_SESSION['user_email'] = $user->email;
+        redirect("pages/index");
+    }
+    function logout() {
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['user_email']);
+        session_destroy();
+        redirect("users/login");
+    }
+
+    function isLoggedIn() {
+        return isset($_SESSION['user_id']);
     }
 }
