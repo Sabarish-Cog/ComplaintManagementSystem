@@ -1,8 +1,9 @@
-<div class="text-center">
+<div class="text-center mb-3 w-100">
     <strong>
-        <br>_________________________________________________________________<br>
+        <hr>
         All Rights Reserved
     </strong>
+    <!-- <a href="https://www.flaticon.com/free-icons/complaint" title="complaint icons">Complaint icons created by Uniconlabs - Flaticon</a> -->
 </div>
 </div>
 <script src="<?php echo URLROOT ?>/js/main.js"></script>

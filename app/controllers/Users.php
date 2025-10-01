@@ -4,7 +4,10 @@ class Users extends Controller
     private $userModel;
 
     public function __construct() {
-        $this->userModel = $this->model('User');;
+        if (isset($_SESSION['user_id'])) {
+            redirect("");
+        }
+        $this->userModel = $this->model('User');
     }
 
     public function index()
@@ -118,11 +121,10 @@ class Users extends Controller
                 if (!$user) {
                     $data['err_password'] = "Password is incorrect!";
                     $this->view("users/login", $data);
+                } else {
+                    flash("login_success", "You are Successfully Logged In!");
+                    $this->createUserSession($user);
                 }
-                flash("login_success", "You are Successfully Logged In!");
-                $this->createUserSession($user);
-                
-                // $this->view("pages/contact");
             } else {
                 $this->view("users/login", $data);
             }
@@ -141,17 +143,16 @@ class Users extends Controller
         $_SESSION['user_id'] = $user->id;
         $_SESSION['user_name'] = $user->name;
         $_SESSION['user_email'] = $user->email;
-        redirect("pages/index");
+        // redirect("pages/index");
+        redirect("complaints");
     }
     function logout() {
         unset($_SESSION['user_id']);
         unset($_SESSION['user_name']);
         unset($_SESSION['user_email']);
         session_destroy();
+        // flash("logout_successfull", "You are Successfully Logged Out");
         redirect("users/login");
     }
 
-    function isLoggedIn() {
-        return isset($_SESSION['user_id']);
-    }
 }
