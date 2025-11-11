@@ -1,5 +1,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine on
+  # Exclude tests directory from rewrite rules
+  RewriteCond %{REQUEST_URI} !^/complaintit/tests/
   RewriteRule  ^$ public/ [L]
+  # Exclude tests directory from rewrite rules
+  RewriteCond %{REQUEST_URI} !^/complaintit/tests/
   RewriteRule  (.*) public/$1 [L]
 </IfModule>

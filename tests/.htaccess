@@ -1,0 +1,13 @@
+# Allow direct access to test files
+# Disable mod_rewrite for this directory
+RewriteEngine Off
+
+# Enable directory browsing (optional)
+Options +Indexes
+
+# Set default index files
+DirectoryIndex index.html index.php
+
+# Enable error display for debugging
+php_flag display_errors On
+php_value error_reporting E_ALL
